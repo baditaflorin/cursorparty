@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/joinscreen.tsx","./src/components/settings.tsx","./src/components/sharecard.tsx","./src/lib/identity.ts","./src/lib/qr.tsx","./src/lib/room.ts","./src/lib/turnconfig.ts","./src/lib/yjsroom.ts","./vite.config.ts"],"version":"5.9.3"}
