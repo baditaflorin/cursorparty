@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AboutLinks } from "./components/AboutLinks";
 import { JoinScreen } from "./components/JoinScreen";
 import { ShareCard } from "./components/ShareCard";
 import { Settings } from "./components/Settings";
@@ -198,6 +199,7 @@ export default function App() {
         />
         <SettingsCornerButton onOpen={() => setShowSettings(true)} />
         {showSettings && <Settings onClose={() => setShowSettings(false)} />}
+        <AboutLinks />
       </>
     );
   }
@@ -276,6 +278,7 @@ export default function App() {
         />
       )}
       {showSettings && <Settings onClose={() => setShowSettings(false)} />}
+      <AboutLinks />
     </>
   );
 }
