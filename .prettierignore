@@ -2,3 +2,8 @@ docs
 node_modules
 package-lock.json
 public/apriltag
+# Canonical fleet-registry-owned files, propagated verbatim via
+# `fleet-runner inject` -- don't reformat/fork them locally, and don't let
+# their upstream drift break this repo's own pre-commit gate.
+CLAUDE.md
+SERVICE-TEMPLATE.md

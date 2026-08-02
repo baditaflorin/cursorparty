@@ -5,6 +5,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+node scripts/crdt-regression.mjs
+
 npm run build
 
 if [ ! -f docs/index.html ]; then

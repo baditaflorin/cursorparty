@@ -17,6 +17,7 @@
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "test:crdt": "node scripts/crdt-regression.mjs",
     "smoke": "bash scripts/smoke.sh",
     "prepare": "husky || true"
   },
