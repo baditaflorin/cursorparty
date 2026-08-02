@@ -10,7 +10,7 @@ import {
   readRoomFromUrl,
   writeUrlHash,
 } from "./lib/room";
-import { joinRoom, type Room, type StickyNote } from "./lib/yjsRoom";
+import { joinRoom, visibleNotes, type Room, type StickyNote } from "./lib/yjsRoom";
 
 type Status = "disconnected" | "connecting" | "online" | "alone";
 
@@ -58,10 +58,12 @@ export default function App() {
           "TURN relay unavailable — falling back to STUN only. Cross-NAT may fail.",
         );
       }
-      // Notes observer
+      // Notes observer. visibleNotes() drops tombstoned notes and anything
+      // that isn't a well-formed StickyNote -- a connected peer can write
+      // arbitrary garbage into this shared Y.Map, and it must not be able
+      // to crash every other peer's render.
       const sync = () => {
-        const list = [...r!.notes.values()].sort((a, b) => a.createdAt - b.createdAt);
-        setNotes(list);
+        setNotes(visibleNotes(r!.notes));
       };
       sync();
       r.notes.observeDeep(sync);
@@ -172,7 +174,18 @@ export default function App() {
   const deleteNote = useCallback(
     (id: string) => {
       if (!room) return;
-      room.notes.delete(id);
+      // Soft-delete (tombstone) instead of room.notes.delete(id). Y.Map
+      // delete() loses unconditionally to any concurrent set() on the same
+      // key -- if peer A deletes a note the instant peer B is mid-edit on
+      // it, the note silently resurrects with B's content once the two
+      // peers sync, no matter which happened "first" in real time. Writing
+      // `deleted: true` via set() instead makes a delete-vs-edit race just
+      // another concurrent write to the same key, resolved by the same
+      // deterministic last-writer-wins rule Yjs already uses for concurrent
+      // edits -- both peers converge on the same outcome.
+      const existing = room.notes.get(id);
+      if (!existing) return;
+      room.notes.set(id, { ...existing, deleted: true });
     },
     [room],
   );
